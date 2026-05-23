@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Book – {{ bus.name }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body p-4">
+        <h4 class="mb-3"><i class="bi bi-ticket-perforated-fill text-primary"></i> Book Your Seat</h4>
+        <table class="table table-borderless mb-3">
+          <tr><th>Bus</th><td>{{ bus.name }}</td></tr>
+          <tr><th>Route</th><td>{{ bus.origin }} → {{ bus.destination }}</td></tr>
+          <tr><th>Departure</th><td>{{ bus.departure }}</td></tr>
+          <tr><th>Price/Seat</th><td>₹{{ bus.price }}</td></tr>
+          <tr><th>Available</th><td><strong class="text-success">{{ available }} seats</strong></td></tr>
+        </table>
+        <form method="POST">
+          <div class="mb-3">
+            <label class="form-label">Number of Seats</label>
+            <input type="number" name="seats" class="form-control" min="1" max="{{ available }}" value="1" required>
+          </div>
+          <div id="total" class="alert alert-info mb-3">Total: ₹{{ bus.price }}</div>
+          <button type="submit" class="btn btn-primary w-100">Confirm Booking</button>
+          <a href="{{ url_for('home') }}" class="btn btn-outline-secondary w-100 mt-2">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const pricePerSeat = {{ bus.price }};
+  document.querySelector('input[name="seats"]').addEventListener('input', function() {
+    document.getElementById('total').textContent = 'Total: ₹' + (this.value * pricePerSeat).toFixed(2);
+  });
+</script>
+{% endblock %}

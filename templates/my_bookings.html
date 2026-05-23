@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}My Bookings{% endblock %}
+{% block content %}
+<h4 class="mb-4"><i class="bi bi-ticket-perforated"></i> My Bookings</h4>
+{% if bookings %}
+  <div class="table-responsive">
+    <table class="table table-hover bg-white rounded shadow-sm">
+      <thead class="table-dark">
+        <tr>
+          <th>#</th><th>Bus</th><th>Route</th><th>Departure</th>
+          <th>Seats</th><th>Amount</th><th>Status</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in bookings %}
+        <tr>
+          <td>{{ b.id }}</td>
+          <td>{{ b.bus.name }}</td>
+          <td>{{ b.bus.origin }} → {{ b.bus.destination }}</td>
+          <td>{{ b.bus.departure }}</td>
+          <td>{{ b.seats }}</td>
+          <td>₹{{ (b.seats * b.bus.price) | int }}</td>
+          <td>
+            <span class="badge {{ 'bg-success' if b.status == 'confirmed' else 'bg-danger' }}">
+              {{ b.status | capitalize }}
+            </span>
+          </td>
+          <td>
+            {% if b.status == 'confirmed' %}
+              <form method="POST" action="{{ url_for('cancel', booking_id=b.id) }}"
+                    onsubmit="return confirm('Cancel this booking?')">
+                <button class="btn btn-sm btn-outline-danger">Cancel</button>
+              </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="text-center py-5 text-muted">
+    <i class="bi bi-ticket display-3"></i>
+    <p class="mt-3">No bookings yet. <a href="{{ url_for('home') }}">Search for buses</a></p>
+  </div>
+{% endif %}
+{% endblock %}
